@@ -430,7 +430,7 @@ print "DDD: (file names are NOT absolute)\n";
         my $wd= ($self->splitpath(Cwd::getcwd(), 1))[1];
         $path_directories = $self->catdir($wd, $path);
         $base_directories = $self->catdir($wd, $base);
-print "DDD1: wd|path_directories|base_directories: ", join('|' => ($wd, $path_directories, $base_directories)), "\n";
+print "DDD1: wd|path_directories|base_directories: ", CORE::join('|' => ($wd, $path_directories, $base_directories)), "\n";
     }
 
     # Now, remove all leading components that are the same

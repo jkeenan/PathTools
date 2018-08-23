@@ -39,6 +39,7 @@ WriteMakefile
                            'Scalar::Util' => '0',
                            # done_testing() is used in dist/Cwd/t/Spec.t
                            'Test::More' => 0.88,
+                           'Data::Dump' => 0,  # only during development
                          },
           ($] > 5.011) ? () : ( INSTALLDIRS => 'perl' ), # CPAN sourced versions should now install to site
           'EXE_FILES' => [],
