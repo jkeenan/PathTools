@@ -155,7 +155,6 @@ my @tests = (
 #[  "Unix->abs2rel('///','/t1/t2/t3')",                '../../..'           ],
 #[  "Unix->abs2rel('/.','/t1/t2/t3')",                 '../../..'           ],
 #[  "Unix->abs2rel('/./','/t1/t2/t3')",                '../../..'           ],
-##[ "Unix->abs2rel('../t4','/t1/t2/t3')",              '../t4'              ],
 #[  "Unix->abs2rel('/t1/t2/t3', '/')",                 't1/t2/t3'           ],
 #[  "Unix->abs2rel('/t1/t2/t3', '/t1')",               't2/t3'              ],
 #[  "Unix->abs2rel('t1/t2/t3', 't1')",                 't2/t3'              ],
