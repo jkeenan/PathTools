@@ -5,6 +5,7 @@ use Cwd ();
 
 our $VERSION = '3.74';
 $VERSION =~ tr/_//d;
+use Data::Dump qw(dd pp);
 
 =head1 NAME
 
@@ -396,13 +397,16 @@ Based on code written by Shigio Yamaguchi.
 sub abs2rel {
     my($self,$path,$base) = @_;
     $base = Cwd::getcwd() unless defined $base and length $base;
+print "AAA: base: $base\n";
 
     ($path, $base) = map $self->canonpath($_), $path, $base;
+print "BBB: |pathbase: ", join('|' => ($path, $base), "\n";
 
     my $path_directories;
     my $base_directories;
 
     if (grep $self->file_name_is_absolute($_), $path, $base) {
+print "CCC:\n";
         ($path, $base) = map $self->rel2abs($_), $path, $base;
 
         my ($path_volume) = $self->splitpath($path, 1);
@@ -422,6 +426,7 @@ sub abs2rel {
         }
     }
     else {
+print "DDD:\n";
         my $wd= ($self->splitpath(Cwd::getcwd(), 1))[1];
         $path_directories = $self->catdir($wd, $path);
         $base_directories = $self->catdir($wd, $base);
@@ -432,10 +437,12 @@ sub abs2rel {
     my @basechunks = $self->splitdir( $base_directories );
 
     if ($base_directories eq $self->rootdir) {
+print "EEE:\n";
         return $self->curdir if $path_directories eq $self->rootdir;
         shift @pathchunks;
         return $self->canonpath( $self->catpath('', $self->catdir( @pathchunks ), '') );
     }
+print "FFF:\n";
 
     my @common;
     while (@pathchunks && @basechunks && $self->_same($pathchunks[0], $basechunks[0])) {
@@ -443,6 +450,7 @@ sub abs2rel {
         shift @basechunks;
     }
     return $self->curdir unless @pathchunks || @basechunks;
+print "GGG:\n";
 
     # @basechunks now contains the directories the resulting relative path 
     # must ascend out of before it can descend to $path_directory.  If there
@@ -465,7 +473,11 @@ sub abs2rel {
         }
     }
     my $result_dirs = $self->catdir( @reverse_base, @pathchunks );
-    return $self->canonpath( $self->catpath('', $result_dirs, '') );
+print "GGG:\n";
+dd($result_dirs);
+    my $rv = $self->canonpath( $self->catpath('', $result_dirs, '') );
+print "HHH: rv: $rv\n";
+    return $rv;
 }
 
 sub _same {
