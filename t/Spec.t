@@ -164,7 +164,8 @@ my @tests = (
 #[  "Unix->abs2rel('/', '/')",                         '.'                  ],
 #[  "Unix->abs2rel('../t1', 't2/t3')",                 '../../../t1'        ],
 #[  "Unix->abs2rel('t1', 't2/../t3')",                 '../t1'              ],
-[  "Unix->abs2rel('t1/t2/..', 't1/t2/../../t3')",     '../t3'              ], # RT 133465
+[  "Unix->abs2rel('t1/t2/..', 't1/t2/../../t3')",     '../t1'              ], # RT 133465
+[  "Unix->abs2rel('t1/t2/t3/..', 't1/t2/t3/../../t4')",     '../t2'        ], # RT 133465
 
 #[ "Unix->rel2abs('t4','/t1/t2/t3')",             '/t1/t2/t3/t4'    ],
 #[ "Unix->rel2abs('t4/t5','/t1/t2/t3')",          '/t1/t2/t3/t4/t5' ],
@@ -843,6 +844,7 @@ for ( @tests ) {
 
     $function =~ s#\\#\\\\#g ;
     $function =~ s/^([^\$].*->)/File::Spec::$1/;
+print "XXX: function: $function\n";
     my $got = join ',', eval $function;
 
  SKIP: {
