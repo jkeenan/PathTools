@@ -403,28 +403,28 @@ sub abs2rel {
     my $base_directories;
 
     if (grep $self->file_name_is_absolute($_), $path, $base) {
-	($path, $base) = map $self->rel2abs($_), $path, $base;
+        ($path, $base) = map $self->rel2abs($_), $path, $base;
 
-	my ($path_volume) = $self->splitpath($path, 1);
-	my ($base_volume) = $self->splitpath($base, 1);
+        my ($path_volume) = $self->splitpath($path, 1);
+        my ($base_volume) = $self->splitpath($base, 1);
 
-	# Can't relativize across volumes
-	return $path unless $path_volume eq $base_volume;
+        # Can't relativize across volumes
+        return $path unless $path_volume eq $base_volume;
 
-	$path_directories = ($self->splitpath($path, 1))[1];
-	$base_directories = ($self->splitpath($base, 1))[1];
+        $path_directories = ($self->splitpath($path, 1))[1];
+        $base_directories = ($self->splitpath($base, 1))[1];
 
-	# For UNC paths, the user might give a volume like //foo/bar that
-	# strictly speaking has no directory portion.  Treat it as if it
-	# had the root directory for that volume.
-	if (!length($base_directories) and $self->file_name_is_absolute($base)) {
-	    $base_directories = $self->rootdir;
-	}
+        # For UNC paths, the user might give a volume like //foo/bar that
+        # strictly speaking has no directory portion.  Treat it as if it
+        # had the root directory for that volume.
+        if (!length($base_directories) and $self->file_name_is_absolute($base)) {
+            $base_directories = $self->rootdir;
+        }
     }
     else {
-	my $wd= ($self->splitpath(Cwd::getcwd(), 1))[1];
-	$path_directories = $self->catdir($wd, $path);
-	$base_directories = $self->catdir($wd, $base);
+        my $wd= ($self->splitpath(Cwd::getcwd(), 1))[1];
+        $path_directories = $self->catdir($wd, $path);
+        $base_directories = $self->catdir($wd, $base);
     }
 
     # Now, remove all leading components that are the same
@@ -432,15 +432,15 @@ sub abs2rel {
     my @basechunks = $self->splitdir( $base_directories );
 
     if ($base_directories eq $self->rootdir) {
-      return $self->curdir if $path_directories eq $self->rootdir;
-      shift @pathchunks;
-      return $self->canonpath( $self->catpath('', $self->catdir( @pathchunks ), '') );
+        return $self->curdir if $path_directories eq $self->rootdir;
+        shift @pathchunks;
+        return $self->canonpath( $self->catpath('', $self->catdir( @pathchunks ), '') );
     }
 
     my @common;
     while (@pathchunks && @basechunks && $self->_same($pathchunks[0], $basechunks[0])) {
-        push @common, shift @pathchunks ;
-        shift @basechunks ;
+        push @common, shift @pathchunks;
+        shift @basechunks;
     }
     return $self->curdir unless @pathchunks || @basechunks;
 
@@ -450,19 +450,19 @@ sub abs2rel {
     # (this only works if they are no symlinks).
     my @reverse_base;
     while( defined(my $dir= shift @basechunks) ) {
-	if( $dir ne $self->updir ) {
-	    unshift @reverse_base, $self->updir;
-	    push @common, $dir;
-	}
-	elsif( @common ) {
-	    if( @reverse_base && $reverse_base[0] eq $self->updir ) {
-		shift @reverse_base;
-		pop @common;
-	    }
-	    else {
-		unshift @reverse_base, pop @common;
-	    }
-	}
+        if( $dir ne $self->updir ) {
+            unshift @reverse_base, $self->updir;
+            push @common, $dir;
+        }
+        elsif( @common ) {
+            if( @reverse_base && $reverse_base[0] eq $self->updir ) {
+                shift @reverse_base;
+                pop @common;
+            }
+            else {
+                unshift @reverse_base, pop @common;
+            }
+        }
     }
     my $result_dirs = $self->catdir( @reverse_base, @pathchunks );
     return $self->canonpath( $self->catpath('', $result_dirs, '') );
