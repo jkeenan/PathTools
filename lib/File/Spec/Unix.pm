@@ -469,25 +469,40 @@ dd(\@basechunks);
     my @reverse_base;
     while( defined(my $dir= shift @basechunks) ) {
         if( $dir ne $self->updir ) {
+print "HHH1:\n";
             unshift @reverse_base, $self->updir;
             push @common, $dir;
+print "HHH1a: \@reverse_base\n";
+dd(\@reverse_base);
+print "HHH1b: \@common\n";
+dd(\@common);
         }
         elsif( @common ) {
+print "HHH2:\n";
             if( @reverse_base && $reverse_base[0] eq $self->updir ) {
+print "HHH3:\n";
                 shift @reverse_base;
                 pop @common;
             }
             else {
+print "HHH4:\n";
                 unshift @reverse_base, pop @common;
+print "HHH4a: \@reverse_base\n";
+dd(\@reverse_base);
+print "HHH4b: \@common\n";
+dd(\@common);
             }
         }
+        else {
+print "HHH5:\n";
+        }
     }
-print "HHH: \@reverse_base\n";
+print "III: \@reverse_base\n";
 dd(\@reverse_base);
     my $result_dirs = $self->catdir( @reverse_base, @pathchunks );
-print "III: <$result_dirs>\n";
+print "JJJ: <$result_dirs>\n";
     my $rv = $self->canonpath( $self->catpath('', $result_dirs, '') );
-print "JJJ: rv: $rv\n";
+print "KKK: rv: $rv\n";
     return $rv;
 }
 
