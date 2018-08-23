@@ -609,5 +609,4 @@ sub _collapse {
                        );
 }
 
-
 1;
