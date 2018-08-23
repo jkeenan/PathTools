@@ -29,3 +29,5 @@ Cwd.o
 ^MANIFEST.bak$
 ^pm_to_blib$
 ^MYMETA.*
+\.travis.yml
+\.appveyor.yml
