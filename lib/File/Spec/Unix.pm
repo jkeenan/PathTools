@@ -400,13 +400,13 @@ sub abs2rel {
 print "AAA: base: $base\n";
 
     ($path, $base) = map $self->canonpath($_), $path, $base;
-print "BBB: |pathbase: ", join('|' => ($path, $base), "\n";
+print "BBB: path|base: ", CORE::join('|' => ($path, $base)), "\n";
 
     my $path_directories;
     my $base_directories;
 
     if (grep $self->file_name_is_absolute($_), $path, $base) {
-print "CCC:\n";
+print "CCC: (file names are absolute)\n";
         ($path, $base) = map $self->rel2abs($_), $path, $base;
 
         my ($path_volume) = $self->splitpath($path, 1);
@@ -426,15 +426,19 @@ print "CCC:\n";
         }
     }
     else {
-print "DDD:\n";
+print "DDD: (file names are NOT absolute)\n";
         my $wd= ($self->splitpath(Cwd::getcwd(), 1))[1];
         $path_directories = $self->catdir($wd, $path);
         $base_directories = $self->catdir($wd, $base);
+print "DDD1: wd|path_directories|base_directories: ", join('|' => ($wd, $path_directories, $base_directories)), "\n";
     }
 
     # Now, remove all leading components that are the same
     my @pathchunks = $self->splitdir( $path_directories );
     my @basechunks = $self->splitdir( $base_directories );
+print "DDD2: pathchunks basechunks\n";
+dd(\@pathchunks);
+dd(\@basechunks);
 
     if ($base_directories eq $self->rootdir) {
 print "EEE:\n";
@@ -442,7 +446,7 @@ print "EEE:\n";
         shift @pathchunks;
         return $self->canonpath( $self->catpath('', $self->catdir( @pathchunks ), '') );
     }
-print "FFF:\n";
+print "FFF: (\$basedirectories ne \$self->rootdir)\n";
 
     my @common;
     while (@pathchunks && @basechunks && $self->_same($pathchunks[0], $basechunks[0])) {
@@ -450,7 +454,13 @@ print "FFF:\n";
         shift @basechunks;
     }
     return $self->curdir unless @pathchunks || @basechunks;
-print "GGG:\n";
+print "GGG: (there are either pathchunks or basechunks)\n";
+print "GGG1: \@common\n";
+dd(\@common);
+print "GGG2: \@pathchunks\n";
+dd(\@pathchunks);
+print "GGG3: \@basechunks\n";
+dd(\@basechunks);
 
     # @basechunks now contains the directories the resulting relative path 
     # must ascend out of before it can descend to $path_directory.  If there
@@ -472,11 +482,12 @@ print "GGG:\n";
             }
         }
     }
+print "HHH: \@reverse_base\n";
+dd(\@reverse_base);
     my $result_dirs = $self->catdir( @reverse_base, @pathchunks );
-print "GGG:\n";
-dd($result_dirs);
+print "III: <$result_dirs>\n";
     my $rv = $self->canonpath( $self->catpath('', $result_dirs, '') );
-print "HHH: rv: $rv\n";
+print "JJJ: rv: $rv\n";
     return $rv;
 }
 
