@@ -176,6 +176,12 @@ my @tests = (
 [  "Unix->abs2rel('t1/t2/..', 't1/t2/../../t3')",     '../t1'              ], # failing
 [  "Unix->abs2rel('t1/t2/t3/..', 't1/t2/t3/../../t4')", '../t2'            ], # failing
 [  "Unix->abs2rel('t1/t2/t3', 't1/t2/t3/../../t4')",  '../t2/t3'           ],
+# next: expected spelling of relpath not met, though relpath is valid for chdir
+[  "Unix->abs2rel('t1/t2/t3/../../t4/t5', 't1/t6/t7')",  '../../t4/t5'     ],
+[  "Unix->abs2rel('t1/t2/t3/../../t4/t5', 't1/t6/t7')",  '../../t2/t3/../../t4/t5'     ],
+# next: expected spelling of relpath not met, though relpath is valid for chdir
+[  "Unix->abs2rel('t1/t2/t3/../../t4/t5/..', 't1/t6/t7')",  '../../t4/t5/..' ],
+[  "Unix->abs2rel('t1/t2/t3/../../t4/t5/..', 't1/t6/t7')",  '../../t2/t3/../../t4/t5/..' ],
 
 [ "Unix->rel2abs('t4','/t1/t2/t3')",             '/t1/t2/t3/t4'    ],
 [ "Unix->rel2abs('t4/t5','/t1/t2/t3')",          '/t1/t2/t3/t4/t5' ],
