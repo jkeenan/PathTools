@@ -505,7 +505,19 @@ sub abs2rel {
 #dd(\@common);
 #print "IIIa: \@reverse_base\n";
 #dd(\@reverse_base);
-    my $result_dirs = $self->catdir( @reverse_base, @pathchunks );
+    my $result_dirs = $self->catdir(
+        @reverse_base,
+        (($pathchunks[-1] eq $self->updir)
+            ? @{ _process_pathchunks(\@pathchunks) }
+            : @pathchunks
+        ),
+#        ((! defined $pathchunks[-1])
+#            ? ()
+#            : ($pathchunks[-1] eq $self->updir)
+#                ? @{ _process_pathchunks(\@pathchunks) }
+#                : @pathchunks
+#        ),
+    );
 #print "JJJ: <$result_dirs>\n";
     my $rv = $self->canonpath( $self->catpath('', $result_dirs, '') );
 #print "KKK: rv: $rv\n";
@@ -613,6 +625,26 @@ sub _collapse {
                         $fs->catdir(@collapsed),
                         $file
                        );
+}
+
+sub _process_pathchunks {
+    my $aref = shift;
+    die "Must supply array reference to process_pathchunks"
+        unless ref($aref) eq 'ARRAY';
+        
+    return [] unless scalar @{$aref};
+    return $aref unless $aref->[-1] eq '..';
+    my $arraycount = scalar @{$aref};
+    my $popcount = 0;
+    for (my $i = $#{$aref}; $i >=0; $i--) {
+        if ($aref->[$i] eq '..') {
+            $popcount++;
+        }
+        else {
+            last;
+        }
+    }
+    return [ @{$aref}[0.. ($arraycount - (2*$popcount) - 1)] ];
 }
 
 1;
